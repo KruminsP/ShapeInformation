@@ -45,7 +45,11 @@ def getSquareSideLength(input):
     B = math.sqrt((x3-x2)**2 + (y3-y2)**2)
     C = math.sqrt((x4-x3)**2 + (y4-y3)**2)
     D = math.sqrt((x1-x4)**2 + (y1-y4)**2)
+    
     return round((A+B+C+D)/4, 2)
+
+def getCircleRadius(approx):
+    return round(cv2.minEnclosingCircle(approx)[1], 1)
 
 #inputs
 img = cv2.imread("png_image.png")
@@ -75,22 +79,20 @@ for contour in contours:
     y = approx.ravel()[1] + 70
     if len(approx) == 3:
         cv2.putText(img, f"Triangle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,255,0))
-        print('Triangle angles ' + ', '.join(str(x) for x in getAngles(approx[0,0], approx[1,0], approx[2,0])))        
+        print('Triangle, angles ' + ', '.join(str(x) for x in getAngles(approx[0,0], approx[1,0], approx[2,0])))        
     elif len(approx) == 4:
         x1, y1, w, h = cv2.boundingRect(approx)
         aspectRatio = float(w)/h
         if aspectRatio >= 0.95 and aspectRatio <= 1.05:
             cv2.putText(img, f"Square", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255,255,0))
-            print(f"Square side length {getSquareSideLength(approx)}")
+            print(f"Square, side length {getSquareSideLength(approx)}")
         else:
             cv2.putText(img, f"Rectangle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,0,255))
     elif len(approx) > 15:
         cv2.putText(img, "Circle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,255,255))
-        print('Circle')
-        #print(approx)
-        #print(cv2.minEnclosingCircle(approx))
+        print(f"Circle, radius {getCircleRadius(approx)}")
     else:
         cv2.putText(img, "Other", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,255,255))    
 
 #cv2.imshow("result", img)
-print("The size of the original image is", img.size)
+#print("The size of the original image is", img.size)
