@@ -48,6 +48,23 @@ def getSquareSideLength(input):
     
     return round((A+B+C+D)/4, 2)
 
+def getRectangleSideLength(input):
+    x1 = input[0,0,0]
+    y1 = input[0,0,1]
+    x2 = input[1,0,0]
+    y2 = input[1,0,1]
+    x3 = input[2,0,0]
+    y3 = input[2,0,1]
+    x4 = input[3,0,0]
+    y4 = input[3,0,1]
+
+    A = math.sqrt((x2-x1)**2 + (y2-y1)**2)
+    B = math.sqrt((x3-x2)**2 + (y3-y2)**2)
+    C = math.sqrt((x4-x3)**2 + (y4-y3)**2)
+    D = math.sqrt((x1-x4)**2 + (y1-y4)**2)
+    
+    return [round((A+C)/2, 1), round((B+D)/2, 1)]
+
 def getCircleRadius(approx):
     return round(cv2.minEnclosingCircle(approx)[1], 1)
 
@@ -88,11 +105,12 @@ for contour in contours:
             print(f"Square, side length {getSquareSideLength(approx)}")
         else:
             cv2.putText(img, f"Rectangle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,0,255))
+            print("Rectangle, side length " + ', '.join(str(x) for x in getRectangleSideLength(approx)))
     elif len(approx) > 15:
         cv2.putText(img, "Circle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,255,255))
         print(f"Circle, radius {getCircleRadius(approx)}")
     else:
         cv2.putText(img, "Other", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,255,255))    
 
-#cv2.imshow("result", img)
+cv2.imshow("result", img)
 #print("The size of the original image is", img.size)
