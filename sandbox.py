@@ -31,6 +31,22 @@ def getAngles(A, B, C):
 
     return [round(alpha, 1), round(betta, 1), round(gamma, 1)]
 
+def getSquareSideLength(input):
+    x1 = input[0,0,0]
+    y1 = input[0,0,1]
+    x2 = input[1,0,0]
+    y2 = input[1,0,1]
+    x3 = input[2,0,0]
+    y3 = input[2,0,1]
+    x4 = input[3,0,0]
+    y4 = input[3,0,1]
+
+    A = math.sqrt((x2-x1)**2 + (y2-y1)**2)
+    B = math.sqrt((x3-x2)**2 + (y3-y2)**2)
+    C = math.sqrt((x4-x3)**2 + (y4-y3)**2)
+    D = math.sqrt((x1-x4)**2 + (y1-y4)**2)
+    return round((A+B+C+D)/4, 2)
+
 #inputs
 img = cv2.imread("png_image.png")
 camera_intrinsics = open("camera_intrinsics.json")
@@ -50,6 +66,8 @@ edges = cv2.Canny(gray, 200,400)
 
 contours, hierarchy= cv2.findContours(edges.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
+print(f"number of shapes: {len(contours)}")
+
 for contour in contours:
     approx = cv2.approxPolyDP(contour, 0.01*cv2.arcLength(contour, True), True)
     cv2.drawContours(img, [approx], 0, (255,0,0), 5)
@@ -62,15 +80,17 @@ for contour in contours:
         x1, y1, w, h = cv2.boundingRect(approx)
         aspectRatio = float(w)/h
         if aspectRatio >= 0.95 and aspectRatio <= 1.05:
-            cv2.putText(img, f"Square, aspect ratio {round(aspectRatio,3)} side length = {h} {w}", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255,255,0))            
+            cv2.putText(img, f"Square", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255,255,0))
+            print(f"Square side length {getSquareSideLength(approx)}")
         else:
-            cv2.putText(img, f"Rectangle, aspect ratio {round(aspectRatio,3)}", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,0,255))
+            cv2.putText(img, f"Rectangle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,0,255))
     elif len(approx) > 15:
-        cv2.putText(img, "Circle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,255,255))        
+        cv2.putText(img, "Circle", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,255,255))
+        print('Circle')
+        #print(approx)
+        #print(cv2.minEnclosingCircle(approx))
     else:
         cv2.putText(img, "Other", (x, y), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,255,255))    
 
 #cv2.imshow("result", img)
-print(f"number of shapes: {len(contours)}")
-
 print("The size of the original image is", img.size)
