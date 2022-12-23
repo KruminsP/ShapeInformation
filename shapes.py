@@ -7,15 +7,7 @@ img = cv2.imread("png_image.png")
 cameraIntrinsics = open("camera_intrinsics.json")
 distanceToCamera = 380 #mm
 
-#import numpy as np
-#img_array = np.load('raw_image.npy')
-#from matplotlib import pyplot as plt
-#plt.imshow(img_array, cmap='gray')
-#plt.show()
-
 imgData = json.load(cameraIntrinsics)
-width = imgData['width']
-height = imgData['height']
 fx = imgData['ffx']
 fy = imgData['ffy']
 pixelFocalLength =(fx + fy)/2
