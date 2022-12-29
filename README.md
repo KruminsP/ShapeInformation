@@ -4,7 +4,7 @@ Program that extracts information about shapes from picture. Built using OpenCV 
 
 Program counts the number of geometric shapes and prints out triangle angles, rectangle side lenghts and circle radius.
 
-Input requires an image and a camera intrinsics file such as: 
+Input requires an image, distance from image to camera, and a camera intrinsics file such as: 
 
 ```{"width": 1280,  
 "height": 720,  
